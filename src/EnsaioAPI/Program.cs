@@ -13,8 +13,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureHttpJsonOptions(x =>
 {
     x.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    x.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    x.SerializerOptions.ReferenceHandler = null;
 });
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -23,6 +24,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("*");
+app.UseStaticFiles();
+app.UseDefaultFiles();
 
 app.MapPost("/empresa", async (ClienteViewModel cliente, EnsaioDbContext context) =>
 {
@@ -67,17 +72,25 @@ app.MapPost("empresa/ensaio", async (EnsaioViewModel ensaioViewModel, EnsaioDbCo
     ensaio.Cliente = cliente;
     context.Ensaio.Add(ensaio);
     await context.SaveChangesAsync();
-    return Results.Ok(ensaio);
+    return Results.Ok(EnsaioViewModel.Map(ensaio));
 });
 
 
 app.MapGet("empresa/{id}/ensaio", async (int id, EnsaioDbContext context) =>
 {
-    var ensaio = await context.Ensaio
+    var ensaios = context.Ensaio
         .Include(x => x.Cliente)
-        .FirstOrDefaultAsync(x => x.Cliente.Id == id);
+        .Include(x => x.Rotina)
+        .Include(x => x.ResistenciaIsolamento)
+        .Include(x => x.ResistenciaOhmicaEnrolamentos)
+        .Where(x => x.Cliente.Id == id);
 
-    return Results.Ok(ensaio);
+    List<EnsaioAPI.ViewModels.Ensaio> ensaiosList = new();
+    foreach (var item in ensaios)
+    {
+        ensaiosList.Add(EnsaioViewModel.ToEnsaio(item));
+    }
+    return Results.Ok(ensaiosList);
 })
 .WithName("ObterEnsaios")
 .WithOpenApi();

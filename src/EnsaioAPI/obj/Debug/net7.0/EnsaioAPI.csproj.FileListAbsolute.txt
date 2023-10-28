@@ -34,3 +34,5 @@ C:\Users\wesle\source\repos\EnsaioApp\src\EnsaioAPI\obj\Debug\net7.0\ref\EnsaioA
 C:\Users\wesle\source\repos\EnsaioApp\src\EnsaioAPI\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\wesle\source\repos\EnsaioApp\src\EnsaioAPI\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\wesle\source\repos\EnsaioApp\src\EnsaioAPI\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\wesle\source\repos\EnsaioApp\src\EnsaioAPI\bin\Debug\net7.0\EnsaioAPI.staticwebassets.runtime.json
+C:\Users\wesle\source\repos\EnsaioApp\src\EnsaioAPI\bin\Debug\net7.0\wwwroot\index.html

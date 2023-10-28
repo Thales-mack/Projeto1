@@ -17,6 +17,18 @@
             return ensaio;
         }
 
+        public static Ensaio ToEnsaio(Models.Ensaio ensaioModel)
+        {
+            var ensaio = new Ensaio()
+            {
+                ResistenciaIsolamento = Map(ensaioModel.ResistenciaIsolamento),
+                ResistenciaOhmicaEnrolamentos = Map(ensaioModel.ResistenciaOhmicaEnrolamentos),
+                Rotina = MapRotina(ensaioModel.Rotina)
+            };
+
+            return ensaio;
+        }
+
         private static Models.ResistenciaOhmicaEnrolamentos Map(ResistenciaOhmicaEnrolamentos resistenciaOhmicaEnrolamentos)
         {
             return new Models.ResistenciaOhmicaEnrolamentos()
@@ -65,6 +77,74 @@
                 LeituraAtBt = resistenciaIsolamento.LeituraAtBt,
                 LeituraAtMassa = resistenciaIsolamento.LeituraAtMassa,
                 LeituraBtMassa = resistenciaIsolamento.LeituraAtBt,
+                TensaoDoMegometro = resistenciaIsolamento.TensaoDoMegometro
+            };
+        }
+
+        public static EnsaioViewModel Map(Models.Ensaio ensaio)
+        {
+            return new EnsaioViewModel()
+            {
+                ClientId = ensaio.Cliente.Id,
+                Ensaio = new Ensaio()
+                {
+                    ResistenciaIsolamento = Map(ensaio.ResistenciaIsolamento),
+                    ResistenciaOhmicaEnrolamentos = Map(ensaio.ResistenciaOhmicaEnrolamentos),
+                    Rotina = MapRotina(ensaio.Rotina)
+                }
+            };
+        }
+
+        public static Rotina MapRotina(Models.Rotina? rotina)
+        {
+            return new Rotina()
+            {
+                Fabricante = rotina.Fabricante,
+                Fases = rotina.Fases,
+                Frequencia = rotina.Frequencia,
+                DataFabricacao = rotina.DataFabricacao,
+                AtLigadaEmKv = rotina.AtLigadaEmKv,
+                BtLigadaEmKv = rotina.BtLigadaEmKv,
+                CorrentAt = rotina.CorrentAt,
+                CorrentBt = rotina.CorrentBt,
+                Derivacoes = rotina.Derivacoes,
+                Estado = rotina.Estado,
+                Ligacao = rotina.Ligacao,
+                MassaKg = rotina.MassaKg,
+                Modelo = rotina.Modelo,
+                Potencia = rotina.Potencia,
+                RotinaId = rotina.RotinaId,
+                TensaoAt = rotina.TensaoAt,
+                TensaoBt = rotina.TensaoBt,
+                Tipo = rotina.Tipo,
+            };
+        }
+
+        private static ResistenciaOhmicaEnrolamentos Map(Models.ResistenciaOhmicaEnrolamentos? resistenciaOhmicaEnrolamentos)
+        {
+            return new ResistenciaOhmicaEnrolamentos()
+            {
+                EnrolTi = resistenciaOhmicaEnrolamentos.EnrolTi,
+                EnrolTs = resistenciaOhmicaEnrolamentos.EnrolTs,
+                H1h2 = resistenciaOhmicaEnrolamentos.H1h2,
+                H1H3 = resistenciaOhmicaEnrolamentos.H2H3,
+                H2H3 = resistenciaOhmicaEnrolamentos.H2H3,
+                ResistenciaOhmicaEnrolamentosId = resistenciaOhmicaEnrolamentos.ResistenciaOhmicaEnrolamentosId,
+                TemperaturaAmbiente = resistenciaOhmicaEnrolamentos.TemperaturaAmbiente,
+                X1x2 = resistenciaOhmicaEnrolamentos.X1x2,
+                X1x3 = resistenciaOhmicaEnrolamentos.X1x3,
+                X2x3 = resistenciaOhmicaEnrolamentos.X2x3, 
+            };
+        }
+
+        private static ResistenciaIsolamento Map(Models.ResistenciaIsolamento? resistenciaIsolamento)
+        {
+            return new ResistenciaIsolamento()
+            {
+                LeituraAtBt = resistenciaIsolamento.LeituraAtBt,
+                LeituraAtMassa = resistenciaIsolamento.LeituraAtMassa,
+                LeituraBtMassa = resistenciaIsolamento.LeituraBtMassa,
+                ResistenciaIsolamentoId = resistenciaIsolamento.ResistenciaIsolamentoId,
                 TensaoDoMegometro = resistenciaIsolamento.TensaoDoMegometro
             };
         }

@@ -1,11 +1,37 @@
 {
   "Version": 1,
-  "Hash": "Fpfp7Y6VnNytxfhCQw4X0eK0J1MUP4AMGiGePiMFxBI=",
+  "Hash": "iylHQorpYobQspvv3QtVH9UlGeHUn3GFEsoHWekyVZc=",
   "Source": "EnsaioAPI",
   "BasePath": "_content/EnsaioAPI",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "EnsaioAPI\\wwwroot",
+      "Source": "EnsaioAPI",
+      "ContentRoot": "C:\\Users\\wesle\\source\\repos\\EnsaioApp\\src\\EnsaioAPI\\wwwroot\\",
+      "BasePath": "_content/EnsaioAPI",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\wesle\\source\\repos\\EnsaioApp\\src\\EnsaioAPI\\wwwroot\\index.html",
+      "SourceId": "EnsaioAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\wesle\\source\\repos\\EnsaioApp\\src\\EnsaioAPI\\wwwroot\\",
+      "BasePath": "_content/EnsaioAPI",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Always",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    }
+  ]
 }
