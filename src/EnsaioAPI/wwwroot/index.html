@@ -10,6 +10,33 @@
 </head>
 <body>
     <div class="container">
+        <div class="row align-items-center">
+            <div class="col"></div>
+            <div class="col">ENSAIO</div>
+            <div class="col"></div>
+        </div>
+        <div class="table-responsive-md">
+            <table class="table table-striped-columns" id="tableEmpresa">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Empresa</th>
+                        <th scope="col">CNPJ</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBodyEmpresa">
+                    <tr>
+                        <td>1</td>
+                        <td>MACKENZIE SA</td>
+                        <td>3234234324324234</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="row">
             <div class="col"></div>
             <div class="col">
@@ -31,11 +58,73 @@
         </div>
     </div>
     <script>
+        async function getEmpresas() {
+            var response = await fetch("/empresa",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "GET"
+                });
+
+            if (!response.ok) {
+                console.log(await response.text())
+                return [];
+            }
+
+            return await response.json()
+        }
+
+        window.onload = async () => {
+
+            var empresas = await getEmpresas();
+
+            empresas.forEach((item) => {
+                console.log("###", item);
+                insertRowInTable(item)
+            })
+        }
+
+        function insertRowInTable(empresa) {
+            console.log(empresa);
+            var tableEmpresa = document.getElementById("tableBodyEmpresa");
+            var btnDelete = document.createElement("button");
+            btnDelete.addEventListener("click", function () {
+                alert('teste');
+            }, false);
+            btnDelete.className = "btn btn-danger";
+            btnDelete.innerText = "Deletar"
+
+
+            var btnNewEnsaio = document.createElement("button");
+            btnNewEnsaio.addEventListener("click", function () {
+                alert('teste');
+            }, false);
+            btnNewEnsaio.className = "btn btn-success";
+            btnNewEnsaio.innerText = "Novo Ensaio"
+
+
+            var row = tableEmpresa.insertRow();
+
+            var idCell = row.insertCell(0);
+            var empresaCell = row.insertCell(1);
+            var cnpjCell = row.insertCell(2);
+            var btnDeleteCell = row.insertCell(3);
+            var btnNovoEnsaioCell = row.insertCell(4);
+
+            idCell.innerText = empresa.id;
+            empresaCell.innerText = empresa.nome;
+            cnpjCell.innerText = empresa.cnpj;
+            btnDeleteCell.appendChild(btnDelete);
+            btnNovoEnsaioCell.appendChild(btnNewEnsaio);
+        }
+
         var form = document.getElementById("form-empresa");
         var formEmpresaButton = document.getElementById("formEmpresaButton");
 
 
-        formEmpresaButton.onclick = async (e) => { 
+        formEmpresaButton.onclick = async (e) => {
             var json = {
                 nome: form.nomeEmpresa.value,
                 cnpj: form.cnpjEmpresa.value,
@@ -60,8 +149,6 @@
 
             e.preventDefault()
         }
-
-        
     </script>
 </body>
 </html>

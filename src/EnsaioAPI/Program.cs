@@ -29,6 +29,12 @@ app.UseCors("*");
 app.UseStaticFiles();
 app.UseDefaultFiles();
 
+app.MapGet("/empresa", async (EnsaioDbContext context) =>
+{
+    var empresas = await context.Cliente.ToListAsync();
+    return Results.Ok(empresas);
+});
+
 app.MapPost("/empresa", async (ClienteViewModel cliente, EnsaioDbContext context) =>
 {
     context.Cliente.Add(new Cliente()

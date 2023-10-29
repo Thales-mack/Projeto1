@@ -1,0 +1,41 @@
+{
+  "clientId": 0,
+  "ensaio": {
+    "rotina": {
+      "potencia": "string",
+      "fases": "string",
+      "ligacao": "string",
+      "tipo": "string",
+      "modelo": "string",
+      "frequencia": "string",
+      "tensaoAt": "string",
+      "tensaoBt": "string",
+      "derivacoes": "string",
+      "atLigadaEmKv": "string",
+      "btLigadaEmKv": "string",
+      "correntAt": "string",
+      "correntBt": "string",
+      "dataFabricacao": "string",
+      "estado": "string",
+      "massaKg": "string",
+      "fabricante": "string"
+    },
+    "resistenciaOhmicaEnrolamentos": {
+      "h1h2": "string",
+      "h1H3": "string",
+      "h2H3": "string",
+      "enrolTs": "string",
+      "temperaturaAmbiente": "string",
+      "x1x2": "string",
+      "x1x3": "string",
+      "x2x3": "string",
+      "enrolTi": "string"
+    },
+    "resistenciaIsolamento": {
+      "leituraAtBt": "string",
+      "leituraAtMassa": "string",
+      "leituraBtMassa": "string",
+      "tensaoDoMegometro": "string"
+    }
+  }
+}
