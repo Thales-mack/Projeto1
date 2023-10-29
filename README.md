@@ -15,3 +15,6 @@
 ### Visualizando o Ensaio
 - Vara para a pagina /ensaio
 - Selecione o ensaio que deseja visualizar clicando no link visualizar ensaio
+
+### Acessando documentacao da API
+- Para visualizar as rotas disponiveis utilize o swagger a partir da rota /swagger
