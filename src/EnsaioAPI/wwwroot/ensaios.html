@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <table class="table table-striped-columns" id="table-ensaios">
+                    <tr>
+                        <th>Numero do Ensaio</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </table>
+                <button class="btn btn-secondary" id="btn-voltar">Voltar</button>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <script>
+
+
+        async function obterEnsaios() {
+            const parameters = new URLSearchParams(location.search);
+            const clientId = parameters.get("clientId");
+            const ensaioId = parameters.get("ensaioId");
+            var response = await fetch(`/empresa/${clientId}/ensaio`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "GET"
+            });
+
+            const formJson = await response.json();
+            console.log(formJson);
+
+
+
+            const tableRotina = document.getElementById("table-ensaios")
+            formJson.map(x => x.rotina).forEach(item => {
+
+                var btnNewEnsaio = document.createElement("button");
+                btnNewEnsaio.addEventListener("click", function () {
+                    window.location.replace(`/ensaio.html?clientId=${clientId}&ensaioId=${item.rotinaId}`);
+                }, false);
+                btnNewEnsaio.className = "btn btn-success";
+                btnNewEnsaio.innerText = "Visualizar"
+
+                var row = tableRotina.insertRow();
+
+                var nameCell = row.insertCell(0);
+                var valueCell = row.insertCell(1);
+
+                nameCell.innerText = item.rotinaId;
+                valueCell.appendChild(btnNewEnsaio);
+            })
+        }
+
+        window.onload = async () => {
+            await obterEnsaios();
+
+            const btnVoltar = document.getElementById("btn-voltar");
+            btnVoltar.addEventListener("click", function () {
+                window.location.replace(`/index.html`);
+            }, false);
+        }
+
+    </script>
+</body>
+</html>

@@ -3,6 +3,7 @@ using EnsaioAPI.ViewModels;
 using EnsaioAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,5 +101,18 @@ app.MapGet("empresa/{id}/ensaio", async (int id, EnsaioDbContext context) =>
 })
 .WithName("ObterEnsaios")
 .WithOpenApi();
+
+app.MapGet("empresa/{id}/ensaio/{ensaioId}", async (int id,  int ensaioId, EnsaioDbContext context) =>
+{
+    var ensaio = await context.Ensaio
+    .Include(x => x.Cliente)
+    .Include(x => x.Rotina)
+    .Include(x => x.ResistenciaIsolamento)
+    .Include(x => x.ResistenciaOhmicaEnrolamentos)
+    .Where(x => x.Cliente.Id == id && x.EnsaioId == ensaioId)
+    .FirstOrDefaultAsync();
+
+    return Results.Ok(EnsaioViewModel.ToEnsaio(ensaio));
+});
 
 app.Run();
