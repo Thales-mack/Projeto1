@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <form id="form-ensaio">
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <script>
+
+        async function createForm() {
+
+            var response = await fetch("/form.json", {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "GET"
+            });
+
+            const formJson = await response.json();
+
+            var divForm = document.getElementById("form-ensaio");
+
+            console.log(formJson);
+
+            Object.keys(formJson.ensaio.rotina).forEach(param => {
+                var divMb = document.createElement("div");
+                divMb.className = "mb-3"
+
+                divMb.innerHTML = `
+                            <label for="${param}" class="form-label">${param}</label>
+                            <input type="${param}" name="${param}" class="form-control" id="${param}" aria-describedby="${param}">
+                        `;
+
+                console.log(divMb);
+                divForm.appendChild(divMb);
+            })
+
+            Object.keys(formJson.ensaio.resistenciaOhmicaEnrolamentos).forEach(param => {
+                var divMb = document.createElement("div");
+                divMb.className = "mb-3"
+
+                divMb.innerHTML = `
+                            <label for="${param}" class="form-label">${param}</label>
+                            <input type="${param}" name="${param}" class="form-control" id="${param}" aria-describedby="${param}">
+                        `;
+
+                console.log(divMb);
+                divForm.appendChild(divMb);
+            })
+
+            Object.keys(formJson.ensaio.resistenciaIsolamento).forEach(param => {
+                var divMb = document.createElement("div");
+                divMb.className = "mb-3"
+
+                divMb.innerHTML = `
+                            <label for="${param}" class="form-label">${param}</label>
+                            <input type="${param}" name="${param}" class="form-control" id="${param}" aria-describedby="${param}">
+                        `;
+
+                console.log(divMb);
+                divForm.appendChild(divMb);
+            })
+
+            var btnForm = document.createElement("btn");
+            btnForm.classList = "btn btn-primary";
+            btnForm.textContent = "Salvar"
+            btnForm.addEventListener("click", async function () {
+                const result = await createEnsaio()
+                if (result) {
+                    alert("Salvo com sucesso")
+                    var parameter = new URLSearchParams(location.search);
+                    const clientId = parameter.get("clientId");
+                    window.location.replace(`/ensaios.html?clientId=${clientId}`);
+                    return;
+                }
+                alert("Erro ao tentar salvar");
+            }, false);
+
+            divForm.appendChild(btnForm);
+        }
+
+        window.onload = async () => {
+           await createForm();
+        }
+
+        async function createEnsaio() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const form = document.getElementById("form-ensaio");
+            var json = {
+                "clientId": urlParams.get("clientId"),
+                "ensaio": {
+                    "rotina": {
+                        "potencia": form.potencia.value,
+                        "fases": form.fases.value,
+                        "ligacao": form.ligacao.value,
+                        "tipo": form.tipo.value,
+                        "modelo": form.modelo.value,
+                        "frequencia": form.frequencia.value,
+                        "tensaoAt": form.tensaoAt.value,
+                        "tensaoBt": form.tensaoBt.value,
+                        "derivacoes": form.derivacoes.value,
+                        "atLigadaEmKv": form.atLigadaEmKv.value,
+                        "btLigadaEmKv": form.btLigadaEmKv.value,
+                        "correntAt": form.correntAt.value,
+                        "correntBt": form.correntBt.value,
+                        "dataFabricacao": form.dataFabricacao.value,
+                        "estado": form.estado.value,
+                        "massaKg": form.massaKg.value,
+                        "fabricante": form.massaKg.value,
+                    },
+                    "resistenciaOhmicaEnrolamentos": {
+                        "h1h2": form.h1h2.value,
+                        "h1H3": form.h1H3.value,
+                        "h2H3": form.h2H3.value,
+                        "enrolTs": form.enrolTs.value,
+                        "temperaturaAmbiente": form.temperaturaAmbiente.value,
+                        "x1x2": form.x1x2.value,
+                        "x1x3": form.x1x3.value,
+                        "x2x3": form.x2x3.value,
+                        "enrolTi": form.enrolTi.value,
+                    },
+                    "resistenciaIsolamento": {
+                        "leituraAtBt": form.leituraAtBt.value,
+                        "leituraAtMassa": form.leituraAtMassa.value,
+                        "leituraBtMassa": form.leituraBtMassa.value,
+                        "tensaoDoMegometro": form.tensaoDoMegometro.value,
+                    }
+                }
+            }
+            console.log("#####", json);
+            var response = await fetch("/empresa/ensaio",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify(json)
+                });
+
+            if (!response.ok) {
+                console.log(await response.text())
+                return false;
+            }
+
+            const body = await response.json();
+            console.log(body);
+            return true;
+        }
+
+    </script>
+</body>
+</html>

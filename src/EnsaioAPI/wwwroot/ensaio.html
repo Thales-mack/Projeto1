@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <table class="table table-striped-columns" id="table-rotina">
+                    <tr>
+                        <th>Nome campo</th>
+                        <th>Valor</th>
+                    </tr>
+                </table>
+                <table class="table table-striped-columns" id="table-resistenciaOhmicaEnrolamentos"></table>
+                <table class="table table-striped-columns" id="table-resistenciaIsolamento"></table>
+                <button class="btn btn-primary" id="btn-voltar">Voltar</button>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <script>
+
+        async function createTable() {
+            const parameters = new URLSearchParams(location.search);
+            const clientId = parameters.get("clientId");
+            const ensaioId = parameters.get("ensaioId");
+            var response = await fetch(`/empresa/${clientId}/ensaio/${ensaioId}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "GET"
+            });
+
+            const formJson = await response.json();
+            console.log(formJson);
+
+            const tableRotina = document.getElementById("table-rotina")
+            Object.keys(formJson.rotina).forEach(param => {
+
+                var row = tableRotina.insertRow();
+
+                var nameCell = row.insertCell(0);
+                var valueCell = row.insertCell(1);
+
+                nameCell.innerText = param;
+                valueCell.innerText = formJson.rotina[param]
+            });
+
+            const tableResistenciaOhmicaEnrolamentos = document.getElementById("table-resistenciaOhmicaEnrolamentos")
+            Object.keys(formJson.resistenciaOhmicaEnrolamentos).forEach(param => {
+
+                var row = tableResistenciaOhmicaEnrolamentos.insertRow();
+
+                var nameCell = row.insertCell(0);
+                var valueCell = row.insertCell(1);
+
+                nameCell.innerText = param;
+                valueCell.innerText = formJson.resistenciaOhmicaEnrolamentos[param]
+            });
+
+            const tableResistenciaIsolamento = document.getElementById("table-resistenciaIsolamento")
+            Object.keys(formJson.resistenciaIsolamento).forEach(param => {
+
+                var row = tableResistenciaIsolamento.insertRow();
+
+                var nameCell = row.insertCell(0);
+                var valueCell = row.insertCell(1);
+
+                nameCell.innerText = param;
+                valueCell.innerText = formJson.resistenciaIsolamento[param]
+            });
+        }
+
+        window.onload = async () => {
+            const ok = await createTable();
+        }
+
+        async function createEnsaio() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const form = document.getElementById("form-ensaio");
+            var json = {
+                "clientId": urlParams.get("clientId"),
+                "ensaio": {
+                    "rotina": {
+                        "potencia": form.potencia.value,
+                        "fases": form.fases.value,
+                        "ligacao": form.ligacao.value,
+                        "tipo": form.tipo.value,
+                        "modelo": form.modelo.value,
+                        "frequencia": form.frequencia.value,
+                        "tensaoAt": form.tensaoAt.value,
+                        "tensaoBt": form.tensaoBt.value,
+                        "derivacoes": form.derivacoes.value,
+                        "atLigadaEmKv": form.atLigadaEmKv.value,
+                        "btLigadaEmKv": form.btLigadaEmKv.value,
+                        "correntAt": form.correntAt.value,
+                        "correntBt": form.correntBt.value,
+                        "dataFabricacao": form.dataFabricacao.value,
+                        "estado": form.estado.value,
+                        "massaKg": form.massaKg.value,
+                        "fabricante": form.massaKg.value,
+                    },
+                    "resistenciaOhmicaEnrolamentos": {
+                        "h1h2": form.h1h2.value,
+                        "h1H3": form.h1H3.value,
+                        "h2H3": form.h2H3.value,
+                        "enrolTs": form.enrolTs.value,
+                        "temperaturaAmbiente": form.temperaturaAmbiente.value,
+                        "x1x2": form.x1x2.value,
+                        "x1x3": form.x1x3.value,
+                        "x2x3": form.x2x3.value,
+                        "enrolTi": form.enrolTi.value,
+                    },
+                    "resistenciaIsolamento": {
+                        "leituraAtBt": form.leituraAtBt.value,
+                        "leituraAtMassa": form.leituraAtMassa.value,
+                        "leituraBtMassa": form.leituraBtMassa.value,
+                        "tensaoDoMegometro": form.tensaoDoMegometro.value,
+                    }
+                }
+            }
+            console.log("#####", json);
+            var response = await fetch("/empresa/ensaio",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify(json)
+                });
+
+            if (!response.ok) {
+                console.log(await response.text())
+                return false;
+            }
+
+            const body = await response.json();
+            console.log(body);
+            return true;
+        }
+
+        const btnVoltar = document.getElementById("btn-voltar");
+        btnVoltar.addEventListener("click", function () {
+            var parameter = new URLSearchParams(location.search);
+            const clientId = parameter.get("clientId");
+            window.location.replace(`/ensaios.html?clientId=${clientId}`);
+        }, false);
+
+    </script>
+</body>
+</html>

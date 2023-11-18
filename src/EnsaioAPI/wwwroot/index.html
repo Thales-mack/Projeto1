@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col"></div>
+            <div class="col">ENSAIO</div>
+            <div class="col"></div>
+        </div>
+        <div class="table-responsive-md">
+            <table class="table table-striped-columns" id="tableEmpresa">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Empresa</th>
+                        <th scope="col">CNPJ</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBodyEmpresa">
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <form id="form-empresa">
+                    <div class="mb-3">
+                        <label for="nomeEmpresa" class="form-label">Nome Empresa</label>
+                        <input type="text" name="nomeEmpresa" class="form-control" id="nomeEmpresa" aria-describedby="nomeEmpresa">
+                        <div id="nomeEmpresa" class="form-text">UNIVERSIDADE MACKENZIE</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cnpjEmpresa" class="form-label">CNPJ EMPRESA</label>
+                        <input type="text" name="cnpjEmpresa" class="form-control" id="cnpjEmpresa" aria-describedby="cnpjEmpresa">
+                        <div id="cnpjEmpresa" class="form-text">99.999.9999/9</div>
+                    </div>
+                    <button class="btn btn-primary" id="formEmpresaButton">Submit</button>
+                </form>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <script>
+        async function getEmpresas() {
+            var response = await fetch("/empresa",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "GET"
+                });
+
+            if (!response.ok) {
+                console.log(await response.text())
+                return [];
+            }
+
+            return await response.json()
+        }
+
+        window.onload = async () => {
+
+            var empresas = await getEmpresas();
+
+            empresas.forEach((item) => {
+                console.log("###", item);
+                insertRowInTable(item)
+            })
+        }
+
+        async function deleteEmpresa(id) {
+            console.log("### deletando empresa");
+            var response = await fetch(`/empresa/${id}`,
+                {
+                    method: "DELETE",
+                });
+
+            if (!response.ok) {
+                console.log("erro excluindo empresa")
+            }
+            console.log("empresa excluida com sucesso");
+        }
+
+        function insertRowInTable(empresa) {
+            console.log(empresa);
+            var tableEmpresa = document.getElementById("tableBodyEmpresa");
+            var btnDelete = document.createElement("button");
+            btnDelete.addEventListener("click", async function () {
+                await deleteEmpresa(empresa.id);
+                window.location.replace(`/index.html`);
+            }, false);
+            btnDelete.className = "btn btn-danger";
+            btnDelete.innerText = "Deletar"
+
+
+            var btnNewEnsaio = document.createElement("button");
+            btnNewEnsaio.addEventListener("click", function () {
+                window.location.replace(`/create-ensaio.html?clientId=${empresa.id}`);
+                //ensaios.html?clientId=2
+            }, false);
+            btnNewEnsaio.className = "btn btn-success";
+            btnNewEnsaio.innerText = "Novo Ensaio"
+
+
+            var btnEnsaios = document.createElement("button");
+            btnEnsaios.addEventListener("click", function () {
+                window.location.replace(`/ensaios.html?clientId=${empresa.id}`);
+            }, false);
+            btnEnsaios.className = "btn btn-success";
+            btnEnsaios.innerText = "Visualizar Ensaios";
+
+            var row = tableEmpresa.insertRow();
+
+            var idCell = row.insertCell(0);
+            var empresaCell = row.insertCell(1);
+            var cnpjCell = row.insertCell(2);
+            var btnDeleteCell = row.insertCell(3);
+            var btnNovoEnsaioCell = row.insertCell(4);
+            var btnEnsaiosCell = row.insertCell(5);
+
+            idCell.innerText = empresa.id;
+            empresaCell.innerText = empresa.nome;
+            cnpjCell.innerText = empresa.cnpj;
+            btnDeleteCell.appendChild(btnDelete);
+            btnNovoEnsaioCell.appendChild(btnNewEnsaio);
+            btnEnsaiosCell.appendChild(btnEnsaios)
+        }
+
+        var form = document.getElementById("form-empresa");
+        var formEmpresaButton = document.getElementById("formEmpresaButton");
+
+
+        formEmpresaButton.onclick = async (e) => {
+            var json = {
+                nome: form.nomeEmpresa.value,
+                cnpj: form.cnpjEmpresa.value,
+            };
+            console.log("#####", json);
+            var response = await fetch("/empresa",
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+                    body: JSON.stringify(json)
+                });
+
+            if (!response.ok) {
+                console.log(await response.text())
+            }
+
+            const body = await response.json()
+            console.log(body);
+        }
+    </script>
+</body>
+</html>
