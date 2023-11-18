@@ -115,4 +115,27 @@ app.MapGet("empresa/{id}/ensaio/{ensaioId}", async (int id,  int ensaioId, Ensai
     return Results.Ok(EnsaioViewModel.ToEnsaio(ensaio));
 });
 
+app.MapDelete("empresa/{id}", async (int id, EnsaioDbContext context) =>
+{
+    var cliente = await context
+        .Cliente
+        .Include(x => x.Ensaios)
+        .FirstOrDefaultAsync(x => x.Id == id);
+
+    if (cliente == null)
+        return Results.NotFound();
+
+    foreach(var ensaio in context.Ensaio.Where(x => x.Cliente.Id == id))
+    {
+        context.Ensaio.Remove(ensaio);
+    }
+
+    context.Cliente.Remove(cliente);
+    context.SaveChanges();
+
+    return Results.Ok("Removido com sucesso!");
+});
+
 app.Run();
+
+public partial class Program { }

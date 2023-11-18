@@ -24,16 +24,10 @@
                         <th scope="col">CNPJ</th>
                         <th scope="col"></th>
                         <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody id="tableBodyEmpresa">
-                    <tr>
-                        <td>1</td>
-                        <td>MACKENZIE SA</td>
-                        <td>3234234324324234</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -47,7 +41,7 @@
                         <div id="nomeEmpresa" class="form-text">UNIVERSIDADE MACKENZIE</div>
                     </div>
                     <div class="mb-3">
-                        <label for="cnpjEmpresa" class="form-label">Nome Empresa</label>
+                        <label for="cnpjEmpresa" class="form-label">CNPJ EMPRESA</label>
                         <input type="text" name="cnpjEmpresa" class="form-control" id="cnpjEmpresa" aria-describedby="cnpjEmpresa">
                         <div id="cnpjEmpresa" class="form-text">99.999.9999/9</div>
                     </div>
@@ -86,12 +80,26 @@
             })
         }
 
+        async function deleteEmpresa(id) {
+            console.log("### deletando empresa");
+            var response = await fetch(`/empresa/${id}`,
+                {
+                    method: "DELETE",
+                });
+
+            if (!response.ok) {
+                console.log("erro excluindo empresa")
+            }
+            console.log("empresa excluida com sucesso");
+        }
+
         function insertRowInTable(empresa) {
             console.log(empresa);
             var tableEmpresa = document.getElementById("tableBodyEmpresa");
             var btnDelete = document.createElement("button");
-            btnDelete.addEventListener("click", function () {
-                alert('teste');
+            btnDelete.addEventListener("click", async function () {
+                await deleteEmpresa(empresa.id);
+                window.location.replace(`/index.html`);
             }, false);
             btnDelete.className = "btn btn-danger";
             btnDelete.innerText = "Deletar"
@@ -100,10 +108,18 @@
             var btnNewEnsaio = document.createElement("button");
             btnNewEnsaio.addEventListener("click", function () {
                 window.location.replace(`/create-ensaio.html?clientId=${empresa.id}`);
+                //ensaios.html?clientId=2
             }, false);
             btnNewEnsaio.className = "btn btn-success";
             btnNewEnsaio.innerText = "Novo Ensaio"
 
+
+            var btnEnsaios = document.createElement("button");
+            btnEnsaios.addEventListener("click", function () {
+                window.location.replace(`/ensaios.html?clientId=${empresa.id}`);
+            }, false);
+            btnEnsaios.className = "btn btn-success";
+            btnEnsaios.innerText = "Visualizar Ensaios";
 
             var row = tableEmpresa.insertRow();
 
@@ -112,12 +128,14 @@
             var cnpjCell = row.insertCell(2);
             var btnDeleteCell = row.insertCell(3);
             var btnNovoEnsaioCell = row.insertCell(4);
+            var btnEnsaiosCell = row.insertCell(5);
 
             idCell.innerText = empresa.id;
             empresaCell.innerText = empresa.nome;
             cnpjCell.innerText = empresa.cnpj;
             btnDeleteCell.appendChild(btnDelete);
             btnNovoEnsaioCell.appendChild(btnNewEnsaio);
+            btnEnsaiosCell.appendChild(btnEnsaios)
         }
 
         var form = document.getElementById("form-empresa");
